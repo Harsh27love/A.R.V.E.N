@@ -1,0 +1,76 @@
+generator client {
+  provider = "prisma-client-js"
+}
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+model Contact {
+  id          String    @id @default(cuid())
+  name        String
+  email       String    @unique
+  phone       String    @default("")
+  company     String    @default("")
+  status      String    @default("lead")
+  tags        String    @default("[]")
+  notes       String    @default("")
+  optedIn     Boolean   @default(false)
+  lastReplyAt DateTime  @default(now())
+  followUpAt  DateTime?
+  createdAt   DateTime  @default(now())
+  messages    Message[]
+}
+model Workflow {
+  id          String      @id @default(cuid())
+  name        String
+  description String      @default("")
+  definition  String
+  status      String      @default("draft")
+  nextRunAt   DateTime?
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+  executions  Execution[]
+}
+model Execution {
+  id            String   @id @default(cuid())
+  workflowId    String
+  workflow      Workflow @relation(fields: [workflowId], references: [id], onDelete: Cascade)
+  definition    String
+  status        String   @default("queued")
+  source        String   @default("manual")
+  logs          String   @default("[]")
+  retryCount    Int      @default(0)
+  simulateError Boolean  @default(false)
+  resumeAt      DateTime?
+  error         String?
+  startedAt     DateTime @default(now())
+  finishedAt    DateTime?
+  messages      Message[]
+}
+model Message {
+  id          String     @id @default(cuid())
+  contactId   String?
+  contact     Contact?   @relation(fields: [contactId], references: [id], onDelete: SetNull)
+  executionId String?
+  execution   Execution? @relation(fields: [executionId], references: [id], onDelete: SetNull)
+  channel     String
+  subject     String     @default("")
+  body        String
+  direction   String     @default("outgoing")
+  status      String     @default("demo")
+  providerId  String?
+  scheduledAt DateTime?
+  createdAt   DateTime   @default(now())
+  @@unique([executionId, contactId])
+}
+model Preference {
+  key   String @id
+  value String
+}
+model ChatMessage {
+  id        String   @id @default(cuid())
+  role      String
+  content   String
+  proposal  String?
+  createdAt DateTime @default(now())
+}

@@ -1,0 +1,32 @@
+{
+  "name": "arven", "version": "0.1.0", "private": true, "type": "module",
+  "scripts": {
+    "dev": "concurrently -k -n API,WEB -c cyan,magenta \"tsx watch backend/index.ts\" \"vite --host 127.0.0.1\"",
+    "build": "tsc --noEmit && vite build",
+    "start": "tsx backend/index.ts",
+    "typecheck": "tsc --noEmit",
+    "ai:test": "tsx scripts/test-ai.ts",
+    "db:generate": "prisma generate",
+    "db:push": "prisma db push",
+    "db:seed": "tsx database/seed.ts",
+    "setup": "tsx scripts/setup.ts",
+    "test": "vitest run",
+    "test:e2e": "playwright test"
+  },
+  "dependencies": {
+    "@fontsource/inter": "^5.2.8", "@fontsource/space-grotesk": "^5.2.10",
+    "@prisma/client": "6.19.0", "@tailwindcss/vite": "^4.1.18", "@xyflow/react": "^12.10.0",
+    "dotenv": "^17.2.3", "express": "^5.1.0", "express-rate-limit": "^8.2.1", "helmet": "^8.1.0",
+    "lucide-react": "^0.468.0", "motion": "^12.23.24", "react": "^19.2.0", "react-dom": "^19.2.0",
+    "recharts": "^3.5.0", "tailwindcss": "^4.1.18", "zod": "^4.6.7"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.56.1", "@types/express": "^5.0.5", "@types/node": "^24.10.0",
+    "@types/react": "^19.2.2", "@types/react-dom": "^19.2.2", "@types/supertest": "^6.0.3",
+    "@vitejs/plugin-react": "^5.1.0", "concurrently": "^9.2.1", "prisma": "6.19.0",
+    "supertest": "^7.1.4", "tsx": "^4.20.6", "typescript": "^5.9.3", "vite": "^7.2.2", "vitest": "^5.0.5"
+  },
+  "prisma": { "schema": "database/schema.prisma", "seed": "tsx database/seed.ts" },
+  "engines": { "node": ">=22.12" },
+  "overrides": { "@prisma/config": { "effect": "^3.20.0", "deepmerge-ts": "^8.0.0" } }
+}
